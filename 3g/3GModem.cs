@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO.Ports;
-
+using System.Threading;
 
 
 namespace _3g
@@ -17,6 +17,7 @@ namespace _3g
         public static void Init(string portname)
         {
             port = new SerialPort(portname, 115200, Parity.None, 8, StopBits.One);
+            
             port.Open();
             port.WriteLine("ATZ");
             log("ATZ Command send");
@@ -26,24 +27,8 @@ namespace _3g
                 log("Response: " + response);
                 throw new Exception("ATZ (reset) failed.");
             }
-            log("ATI command send");
-            port.WriteLine("ATI");
-            response = port.ReadExisting();
-            string[] arrLines = response.Split('\n');
-            log("Response:");
-            foreach(string l in arrLines)
-                log(l);
-
-            /*
-             * Huawei check - currently only tested with Huawei Modem.
-             */
-            if (!response.ToLower().Contains("huawei"))
-            {
-#if ONLYHUAWEI
-                throw new Exception("Only HUAWEI modems are suported. Recompile wih ONLYHUAWEI commented.");
-#endif
-                log("Not a HUAWEI device - be careful!");
-            }
+       
+          
         }
 
         public static string DeviceInfo()
@@ -67,6 +52,8 @@ namespace _3g
                 return PinStatus.PIN_REQUIRED;
             if (response.Contains("SIM PUK"))
                 return PinStatus.PUK_REQUIRED;
+            if (response.Contains("AT+CPIN?"))
+                return PinStatus.OK;
             return PinStatus.ERROR;
         }
 
@@ -147,16 +134,14 @@ namespace _3g
         private static string command(string cmd)
         {
             checkOpen();
+            port.ReadExisting();
             port.WriteLine(cmd);
             log(cmd + " send.");
 
+            Thread.Sleep(250);
+            string response = port.ReadExisting();
+            log("Response: " + response);
 
-            string response = port.ReadLine();
-
-            string[] arrLines = response.Split('\n');
-            log("Response:");
-            foreach (string l in arrLines)
-                log(l);
             return response;
         }
 
