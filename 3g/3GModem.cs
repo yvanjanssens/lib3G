@@ -21,7 +21,7 @@ namespace _3g
             port.WriteLine("ATZ");
             log("ATZ Command send");
             string response = port.ReadExisting();
-            if (!response.Contains("OK"))
+            if (!response.Contains("ATZ"))
             {
                 log("Response: " + response);
                 throw new Exception("ATZ (reset) failed.");
