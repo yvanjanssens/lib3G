@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="3GModem.cs" />
+    <Compile Include="APNSettings.cs" />
     <Compile Include="PinEntryStatus.cs" />
     <Compile Include="PinStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

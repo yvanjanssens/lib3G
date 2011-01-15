@@ -1,0 +1,5 @@
+C:\Users\Adm1n\Documents\Visual Studio 2008\Projects\3gdemo\3g\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Adm1n\Documents\Visual Studio 2008\Projects\3gdemo\3g\bin\Debug\3g.dll
+C:\Users\Adm1n\Documents\Visual Studio 2008\Projects\3gdemo\3g\bin\Debug\3g.pdb
+C:\Users\Adm1n\Documents\Visual Studio 2008\Projects\3gdemo\3g\obj\Debug\3g.dll
+C:\Users\Adm1n\Documents\Visual Studio 2008\Projects\3gdemo\3g\obj\Debug\3g.pdb

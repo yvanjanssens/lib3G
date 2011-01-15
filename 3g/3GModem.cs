@@ -1,4 +1,5 @@
 ﻿#define DEBUG
+//#define ONLYHUAWEI
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace _3g
         private static SerialPort port;
         public static void Init(string portname)
         {
-            port = new SerialPort(portname, 115200, Parity.None, 8, 1);
+            port = new SerialPort(portname, 115200, Parity.None, 8, StopBits.One);
             port.Open();
             port.WriteLine("ATZ");
             log("ATZ Command send");
@@ -28,7 +29,7 @@ namespace _3g
             log("ATI command send");
             port.WriteLine("ATI");
             response = port.ReadExisting();
-            string[] arrLines = response.Split("\n");
+            string[] arrLines = response.Split('\n');
             log("Response:");
             foreach(string l in arrLines)
                 log(l);
@@ -95,8 +96,8 @@ namespace _3g
         public static APNSettings GetAPNSettings(){
             APNSettings apns = new APNSettings();
             string response = command("AT+CGDCONT?");
-            response = response.Replace("+CGDCONT:");
-            string[] responseComps = response.Split(",");
+            response = response.Replace("+CGDCONT:", "");
+            string[] responseComps = response.Split(',');
             if (responseComps.Length < 2)
                 return null;
             apns.APNname = responseComps[2].Replace("\"","");
@@ -112,6 +113,35 @@ namespace _3g
                     apns.ApnType = APNType.IPv4;
                     break;
             }
+            return apns;
+        }
+
+        public static void SetAPN(APNType type ,string apn)
+        {
+            // Safety measure
+            // We don't want our H/W to be exposed to idiots :-S
+            apn = apn.Replace("\"", "");
+            
+            // Defaulting to IP...
+            string types = "IP";
+            switch (type)
+            {
+                case APNType.IPv4:
+                    types = "IP";
+                    break;
+                case APNType.IPv6:
+                    types = "IPV6";
+                    break;
+                case APNType.PPP:
+                    types = "PPP";
+                    break;
+
+            }
+
+
+            string response = command("AT+CGDCONT=1,\""+ types + "\",\"" + apn + "\"");
+            if (!response.Contains("OK"))
+                throw new Exception("Could not set APN.");
         }
 
         private static string command(string cmd)
@@ -123,7 +153,7 @@ namespace _3g
 
             string response = port.ReadLine();
 
-            string[] arrLines = response.Split("\n");
+            string[] arrLines = response.Split('\n');
             log("Response:");
             foreach (string l in arrLines)
                 log(l);
