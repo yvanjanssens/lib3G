@@ -1,0 +1,13 @@
+lib3G + demo
+------------
+
+(c) Yvan JANSSENS 2011 - All Rights Reserved
+
+lib3G is a library for acessing 3G modem properties, currently written for Windows.
+
+
+At the moment, only HUAWEI 3G devices are supported, since I don't have other ones.
+
+Enjoy,
+
+Yvan
