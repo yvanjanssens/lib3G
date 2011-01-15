@@ -92,6 +92,28 @@ namespace _3g
             
         }
 
+        public static APNSettings GetAPNSettings(){
+            APNSettings apns = new APNSettings();
+            string response = command("AT+CGDCONT?");
+            response = response.Replace("+CGDCONT:");
+            string[] responseComps = response.Split(",");
+            if (responseComps.Length < 2)
+                return null;
+            apns.APNname = responseComps[2].Replace("\"","");
+            switch (responseComps[1].Trim().Replace("\"", ""))
+            {
+                case "PPP":
+                    apns.ApnType = APNType.PPP;
+                    break;
+                case "IPV6":
+                    apns.ApnType = APNType.IPv6;
+                    break;
+                case "IP":
+                    apns.ApnType = APNType.IPv4;
+                    break;
+            }
+        }
+
         private static string command(string cmd)
         {
             checkOpen();
